@@ -21,4 +21,7 @@ public class UserService {
         Optional<User> optional = userRepository.findById(id);
         return optional.get();
     }
+    public User insert(User user){
+        return userRepository.save(user);
+    }
 }
