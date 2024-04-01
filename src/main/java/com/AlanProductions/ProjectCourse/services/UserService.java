@@ -4,6 +4,7 @@ import com.AlanProductions.ProjectCourse.entities.User;
 import com.AlanProductions.ProjectCourse.repositories.UserRepository;
 import com.AlanProductions.ProjectCourse.services.exceptions.DatabaseException;
 import com.AlanProductions.ProjectCourse.services.exceptions.ResourceNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -39,9 +40,13 @@ public class UserService {
         }
     }
     public User update(Long id, User user){
-        User entity = userRepository.getReferenceById(id);
-        updateData(entity,user);
-        return userRepository.save(entity);
+        try {
+            User entity = userRepository.getReferenceById(id);
+            updateData(entity, user);
+            return userRepository.save(entity);
+        } catch (EntityNotFoundException e){
+            throw new ResourceNotFoundException(id);
+        }
     }
 
     private void updateData(User entity, User user) {
